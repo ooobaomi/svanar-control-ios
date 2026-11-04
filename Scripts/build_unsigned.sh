@@ -16,7 +16,7 @@ xcodebuild -project SvanarControl.xcodeproj -scheme SvanarControl \
   build 2>&1 | tee build/xcodebuild.log
 app='build/DerivedData/Build/Products/Release-iphoneos/SvanarControl.app'
 test -f "$app/SvanarControl"
-/usr/bin/lipo -verify_arch arm64 "$app/SvanarControl"
+/usr/bin/lipo "$app/SvanarControl" -verify_arch arm64
 /usr/libexec/PlistBuddy -c 'Print :CFBundlePackageType' "$app/Info.plist" | grep -qx APPL
 python3 Scripts/package_ipa.py "$app" artifacts/SvanarControl-unsigned.ipa
 shasum -a 256 artifacts/SvanarControl-unsigned.ipa > artifacts/SHA256SUMS.txt
