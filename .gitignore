@@ -1,0 +1,9 @@
+build/
+artifacts/
+.DS_Store
+xcuserdata/
+*.xcuserstate
+*.p12
+*.mobileprovision
+*.key
+.env

@@ -1,0 +1,61 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'App/**'
+      - 'Scripts/**'
+      - 'Tests/**'
+      - 'SvanarControl.xcodeproj/**'
+      - '.github/workflows/build-ios.yml'
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: 'Bundle ID; signed builds must match the provisioning profile'
+        required: true
+        default: 'io.local.svanarcontrol'
+        type: string
+      sign:
+        description: 'Also generate a signed device-installable IPA (requires repository secrets)'
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      BUNDLE_ID: ${{ inputs.bundle_id || 'io.local.svanarcontrol' }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Build and test native iOS arm64 app
+        shell: bash
+        run: bash Scripts/build_unsigned.sh
+      - name: Sign for registered iPhones (optional)
+        if: ${{ inputs.sign }}
+        env:
+          IOS_CERT_P12_BASE64: ${{ secrets.IOS_CERT_P12_BASE64 }}
+          IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
+          IOS_PROFILE_BASE64: ${{ secrets.IOS_PROFILE_BASE64 }}
+        shell: bash
+        run: bash Scripts/build_signed.sh
+      - name: Upload IPA artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SvanarControl-iOS-${{ github.run_number }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iOS-build-logs-${{ github.run_number }}
+          path: build/*.log
+          if-no-files-found: ignore
+          retention-days: 3

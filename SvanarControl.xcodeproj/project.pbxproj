@@ -1,0 +1,34 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+		B72A09A96314C82D344322CC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView.swift"; sourceTree = "<group>"; };
+		9FF2EA8E94F5AE97E000DA72 = { isa = PBXBuildFile; fileRef = B72A09A96314C82D344322CC; };
+		69C6339C88BAF0D0AEE35B98 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HeadphoneManager.swift"; sourceTree = "<group>"; };
+		B838BABB629EEDD121C999B9 = { isa = PBXBuildFile; fileRef = 69C6339C88BAF0D0AEE35B98; };
+		BCC4B29B9DB9261EF2AF0BD7 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HeadphoneProtocol.swift"; sourceTree = "<group>"; };
+		93280318556551071E99D90B = { isa = PBXBuildFile; fileRef = BCC4B29B9DB9261EF2AF0BD7; };
+		839AD57227F5131A8CA9491C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SvanarControlApp.swift"; sourceTree = "<group>"; };
+		EF83D4DE192068A019148452 = { isa = PBXBuildFile; fileRef = 839AD57227F5131A8CA9491C; };
+		DECB254F9F6046E214AE8A06 = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		999FF37E9C5A0FFB78E1CDE2 = { isa = PBXBuildFile; fileRef = DECB254F9F6046E214AE8A06; };
+		F82CA38F99180137D215F6D4 = { isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SvanarControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		085ED06E573690BA3A56BC1E = { isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B72A09A96314C82D344322CC,69C6339C88BAF0D0AEE35B98,BCC4B29B9DB9261EF2AF0BD7,839AD57227F5131A8CA9491C,DECB254F9F6046E214AE8A06,); };
+		6F7199ED7B63CDA338A0FB82 = { isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (F82CA38F99180137D215F6D4,); };
+		CC5D242D023A9271190EA7C6 = { isa = PBXGroup; sourceTree = "<group>"; children = (085ED06E573690BA3A56BC1E,6F7199ED7B63CDA338A0FB82,); };
+		9261F04E014268C1FB6C1C5E = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (9FF2EA8E94F5AE97E000DA72,B838BABB629EEDD121C999B9,93280318556551071E99D90B,EF83D4DE192068A019148452,); runOnlyForDeploymentPostprocessing = 0; };
+		0B0EAC1C67A2F2EB9E6EB6F7 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B04831CC372489EBF0287850 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (999FF37E9C5A0FFB78E1CDE2,); runOnlyForDeploymentPostprocessing = 0; };
+		184B519F8E1416CCE38CFFD7 = { isa = XCBuildConfiguration; name = Debug; buildSettings = {ALWAYS_SEARCH_USER_PATHS = "NO";CLANG_ENABLE_MODULES = "YES";CLANG_ENABLE_OBJC_ARC = "YES";IPHONEOS_DEPLOYMENT_TARGET = "16.0";SDKROOT = "iphoneos";SWIFT_VERSION = "5.0";SWIFT_OPTIMIZATION_LEVEL = "-Onone";SWIFT_COMPILATION_MODE = "singlefile";DEBUG_INFORMATION_FORMAT = "dwarf";ENABLE_NS_ASSERTIONS = "YES";SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";}; };
+		D33AAFE35EDBC07AD2F20989 = { isa = XCBuildConfiguration; name = Debug; buildSettings = {PRODUCT_BUNDLE_IDENTIFIER = "io.local.svanarcontrol";PRODUCT_NAME = "$(TARGET_NAME)";INFOPLIST_FILE = "App/Info.plist";GENERATE_INFOPLIST_FILE = "NO";ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";CODE_SIGN_STYLE = "Automatic";TARGETED_DEVICE_FAMILY = "1,2";SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";SUPPORTS_MACCATALYST = "NO";CURRENT_PROJECT_VERSION = "1";MARKETING_VERSION = "1.0.0";ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "YES";LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";}; };
+		A824290273A346217D9BE6F4 = { isa = XCBuildConfiguration; name = Release; buildSettings = {ALWAYS_SEARCH_USER_PATHS = "NO";CLANG_ENABLE_MODULES = "YES";CLANG_ENABLE_OBJC_ARC = "YES";IPHONEOS_DEPLOYMENT_TARGET = "16.0";SDKROOT = "iphoneos";SWIFT_VERSION = "5.0";SWIFT_OPTIMIZATION_LEVEL = "-O";SWIFT_COMPILATION_MODE = "wholemodule";DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";ENABLE_NS_ASSERTIONS = "NO";SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";}; };
+		A4F6FDF00412DAC7A3965672 = { isa = XCBuildConfiguration; name = Release; buildSettings = {PRODUCT_BUNDLE_IDENTIFIER = "io.local.svanarcontrol";PRODUCT_NAME = "$(TARGET_NAME)";INFOPLIST_FILE = "App/Info.plist";GENERATE_INFOPLIST_FILE = "NO";ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";CODE_SIGN_STYLE = "Automatic";TARGETED_DEVICE_FAMILY = "1,2";SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";SUPPORTS_MACCATALYST = "NO";CURRENT_PROJECT_VERSION = "1";MARKETING_VERSION = "1.0.0";ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "YES";LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";}; };
+		1922B098E983995960BE56B0 = { isa = XCConfigurationList; buildConfigurations = (184B519F8E1416CCE38CFFD7,A824290273A346217D9BE6F4,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		6FA5FFADD6E6A4C127CEE419 = { isa = XCConfigurationList; buildConfigurations = (D33AAFE35EDBC07AD2F20989,A4F6FDF00412DAC7A3965672,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		34A04005BCAF206EEC990BD9 = { isa = PBXNativeTarget; buildConfigurationList = 6FA5FFADD6E6A4C127CEE419; buildPhases = (9261F04E014268C1FB6C1C5E,0B0EAC1C67A2F2EB9E6EB6F7,B04831CC372489EBF0287850,); buildRules = (); dependencies = (); name = SvanarControl; productName = SvanarControl; productReference = F82CA38F99180137D215F6D4; productType = "com.apple.product-type.application"; };
+		244210E48437B6556980A702 = { isa = PBXProject; buildConfigurationList = 1922B098E983995960BE56B0; attributes = { LastUpgradeCheck = 1600; LastSwiftUpdateCheck = 1600; }; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en,"zh-Hans",Base,); mainGroup = CC5D242D023A9271190EA7C6; productRefGroup = 6F7199ED7B63CDA338A0FB82; projectDirPath = ""; projectRoot = ""; targets = (34A04005BCAF206EEC990BD9,); };
+	};
+	rootObject = 244210E48437B6556980A702;
+}
