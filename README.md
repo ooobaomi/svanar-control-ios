@@ -6,7 +6,10 @@
 
 - 已完成原生 iOS 工程、协议实现、界面、协议测试与 GitHub Actions 工作流。
 - 模式 / EQ 命令来自已在同一副耳机上验证的 Windows 协议，不是靠界面假切换。
-- 本地环境是 Windows，本目录本身不是已编译 IPA。只有 GitHub macOS 工作流成功运行后才有 `SvanarControl-unsigned.ipa`。
+- 已通过 GitHub macOS / Xcode 16.4 完成 iPhoneOS arm64 编译，生成并下载了 `SvanarControl-iOS-unsigned.ipa`；最低系统 iOS 16.0。
+- 成功构建：https://github.com/ooobaomi/svanar-control-ios/actions/runs/41813850777
+- IPA SHA-256：`a6d08ea74046836efdcbacdc32737ce66981eea520fca3241178f00ea4062bf1`。
+- Swift 协议测试已在 macOS 通过；已在下载后校验 IPA、Mach-O 平台、arm64 架构和蓝牙用途说明。
 - 待签名 IPA 需要签名后安装；可选签名工作流可使用你在 GitHub Secrets 中配置的开发 / Ad Hoc 证书和包含手机 UDID 的描述文件。签名资料不要放进源码、聊天或工作流日志。
 - iPhone 实机蓝牙连接和 UI 尚待安装后验证；Windows 协议验证不等于 iOS 实机验证。
 
@@ -46,7 +49,7 @@
 
 脚本使用 GitHub 的网页登录流程，不需要把令牌粘贴到聊天。为保护现有项目，它会拒绝覆盖非空远程仓库或复用已有本地 Git 历史。
 
-仅手动运行构建，未设置推送时自动构建。GitHub 托管 macOS runner 的可用额度与费用以你的账户为准，本工作流超时 30 分钟，产物保留 7 天。
+支持手动构建；main 分支的 App / Scripts / Tests / Xcode 项目 / 工作流更新也会触发构建。GitHub 托管 macOS runner 的可用额度与费用以你的账户为准，本工作流超时 30 分钟，产物保留 7 天。
 
 ### 可选：直接导出已签名 IPA
 
