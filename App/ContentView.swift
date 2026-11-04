@@ -3,7 +3,7 @@ import MediaPlayer
 import AVKit
 
 private let mint = Color(red: 0.61, green: 0.90, blue: 0.73)
-private let background = Color(red: 0.06, green: 0.09, blue: 0.10)
+private let appBackground = Color(red: 0.06, green: 0.09, blue: 0.10)
 private let panel = Color(red: 0.11, green: 0.15, blue: 0.16)
 
 struct ContentView: View {
@@ -36,7 +36,7 @@ struct ContentView: View {
                     Text("SVANAR Control 1.0 · 非 HIFIMAN 官方应用\n本机蓝牙通信，无账号、无互联网服务。")
                         .font(.caption2).foregroundStyle(.secondary)
                 }.padding(20)
-            }.background(background).tint(mint)
+            }.background(appBackground).tint(mint)
                 .navigationBarTitleDisplayMode(.inline)
                 .sheet(isPresented: $showEQ) { EQView().environmentObject(headphones).preferredColorScheme(.dark) }
         }.tint(mint)
@@ -65,7 +65,7 @@ struct ContentView: View {
                                 .font(.footnote).foregroundStyle(.secondary)
                             Button(action: headphones.scan) {
                                 HStack {
-                                    if headphones.isScanning || headphones.isConnecting { ProgressView().tint(background) }
+                                    if headphones.isScanning || headphones.isConnecting { ProgressView().tint(appBackground) }
                                     Text(headphones.isConnecting ? "连接中" : headphones.isScanning ? "重新扫描" : "扫描耳机")
                                 }.frame(maxWidth: .infinity).padding(.vertical, 8)
                             }.buttonStyle(.borderedProminent).disabled(headphones.isConnecting)
@@ -100,7 +100,7 @@ struct ContentView: View {
                                         Image(systemName: mode.symbol).font(.title2)
                                         Text(mode.name).font(.subheadline)
                                     }.frame(maxWidth: .infinity).padding(.vertical, 16)
-                                        .background(headphones.mode == mode ? mint.opacity(0.18) : background)
+                                        .background(headphones.mode == mode ? mint.opacity(0.18) : appBackground)
                                         .clipShape(RoundedRectangle(cornerRadius: 14))
                                 }.disabled(!headphones.isReady || headphones.isBusy)
                             }
@@ -181,7 +181,7 @@ struct EQView: View {
                         .font(.caption).foregroundStyle(.secondary)
                     Text(headphones.status).font(.footnote).foregroundStyle(.secondary)
                 }.padding(20)
-            }.background(background)
+            }.background(appBackground)
                 .navigationTitle("均衡器").navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
         }.tint(mint)
@@ -199,7 +199,7 @@ struct EQView: View {
     private var applyButton: some View {
         Button(action: headphones.applyEQ) {
                         HStack {
-                            if headphones.isBusy { ProgressView().tint(background) }
+                            if headphones.isBusy { ProgressView().tint(appBackground) }
                             Text("应用到耳机").fontWeight(.semibold)
                         }.frame(maxWidth: .infinity).padding(.vertical, 10)
                     }.buttonStyle(.borderedProminent).disabled(!headphones.isReady || headphones.isBusy)
