@@ -32,7 +32,7 @@ jobs:
   build:
     permissions:
       contents: write
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 30
     env:
       BUNDLE_ID: ${{ inputs.bundle_id || 'io.local.svanarcontrol' }}
