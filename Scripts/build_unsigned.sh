@@ -7,7 +7,7 @@ if [[ "$(uname -s)" != Darwin ]]; then
 fi
 mkdir -p build artifacts
 python3 Scripts/generate_project.py
-swiftc App/HeadphoneProtocol.swift Tests/main.swift -o build/protocol-tests
+swiftc App/HeadphoneProtocol.swift App/EQModels.swift App/DeviceFeatures.swift Tests/main.swift -o build/protocol-tests
 build/protocol-tests
 xcodebuild -version
 xcodebuild -project SvanarControl.xcodeproj -scheme SvanarControl \

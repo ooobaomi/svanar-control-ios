@@ -1,128 +1,54 @@
-# SVANAR Control · iOS
+# SVANAR Control — Android / iOS
 
-原生 SwiftUI + CoreBluetooth 耳机伴侣，面向 iOS 16.0+，无第三方运行时依赖。
+HIFIMAN SVANAR WIRELESS 的非官方本地蓝牙伴侣。没有账号、云端耳机控制或固件刷写功能。
 
-## 交付状态
+## 下载
 
-- 已完成原生 iOS 工程、协议实现、界面、协议测试与 GitHub Actions 工作流。
-- 模式 / EQ 命令来自已在同一副耳机上验证的 Windows 协议，不是靠界面假切换。
-- 已通过 GitHub macOS / Xcode 16.4 完成 iPhoneOS arm64 编译，生成并下载了 `SvanarControl-iOS-unsigned.ipa`；最低系统 iOS 16.0。
-- 成功构建：https://github.com/ooobaomi/svanar-control-ios/actions/runs/41813850777
-- IPA SHA-256：`a6d08ea74046836efdcbacdc32737ce66981eea520fca3241178f00ea4062bf1`。
-- Swift 协议测试已在 macOS 通过；已在下载后校验 IPA、Mach-O 平台、arm64 架构和蓝牙用途说明。
-- 待签名 IPA 需要签名后安装；可选签名工作流可使用你在 GitHub Secrets 中配置的开发 / Ad Hoc 证书和包含手机 UDID 的描述文件。签名资料不要放进源码、聊天或工作流日志。
-- iPhone 实机蓝牙连接和 UI 尚待安装后验证；Windows 协议验证不等于 iOS 实机验证。
+- [Android v1.3.0：APK、源码和 EQ 文件](https://github.com/ooobaomi/svanar-control-ios/releases/tag/android-v1.3.0)
+- [iOS：查看最新 Release 中的 IPA 和源码](https://github.com/ooobaomi/svanar-control-ios/releases)
+- [构建记录](https://github.com/ooobaomi/svanar-control-ios/actions)
 
-## 功能
+Android APK 使用本机原有开发签名，可覆盖该签名的旧版安装。
+iOS 默认交付 **unsigned / 待签名 IPA**，签名后安装；不是模拟器包，也不等同于可直接安装或已完成 iPhone 实机测试。
 
-1. 扫描 SVANAR 专用厂商广播，通过产品编号识别候选设备；由你手动选择，避免控制附近同名耳机。
-2. HiFi / 降噪 / 通透模式切换，写入后重新查询，最多重试一次。
-3. 耳机内置 10 段 EQ：31、62、125、250、500、1k、2k、4k、8k、16k Hz，每段 -10 至 +10 dB。
-4. 平直、低频增强、人声清晰、柔和高频预设草稿；本机保存 / 载入；显式应用后 10 段逐项回读验证。
-5. 左右耳电量读取；未知值显示横线，未验证的第三字节不显示为充电盒电量。
-6. iOS 原生系统音量滑块、音频路由选择器及 App 蓝牙权限设置入口。
+## 工程
 
-### 与 Windows 版的区别
+- `Android/`：原生 Java Android 8+ 源码和 PowerShell 构建脚本。
+- `downloads/`：已在安卓手机测试的预编译、已签名 APK，以及 14 组 EQ JSON。
+- `App/`、`Scripts/`、`Tests/`、`SvanarControl.xcodeproj/`：iOS 16+ SwiftUI / CoreBluetooth 工程。
 
-- iOS 不暴露 Windows 播放端点 API，音量和音频路由使用系统原生控件，不提供跨应用端点强制切换或恢复 Windows 输出的功能。
-- 只请求蓝牙权限，不请求定位、麦克风或账号，不将后台模式伪装成持续连接保证。
-- 进入后台停止扫描和轮询；返回前台时尝试刷新已有连接。断开后需手动重新扫描。
-- 扫描不按服务 UUID 过滤：已验证固件的广播没有携带服务列表。
-- 首次安装前，请先在电脑 SVANAR Control 中点击“断开控制”，再连接 iPhone，避免 BLE 被电脑占用。耳机音频配对仍在 iOS 蓝牙设置中进行。
+## v1.3 功能
 
-## 用 GitHub Actions 得到 IPA（Windows 用户）
+- HiFi／降噪／通透，写入后查询确认；10 段硬件 EQ，14 组通用偏好预设，非测量校准。
+- 多套 EQ 收藏，保存、覆盖、重命名、删除；Android / iOS 使用同一 JSON 文件格式。
+- 显式模式绑定和可关闭的 EQ 联动：默认关闭，首次连接只读，未绑定模式不改 EQ。
+- 游戏模式、左右耳电量、型号／固件／耳机编码报告和强度能力诊断。
+- 触控映射读取、按设备备份与恢复逻辑；只对返回有效映射的设备开放写入。
 
-### 上传工程
+### 真实设备边界
 
-1. 建议创建一个私有 GitHub 仓库，例如 `svanar-control-ios`。本工程不是 HIFIMAN 官方软件。
-2. 将**当前目录内全部内容**上传到仓库根目录，而不是上传外层目录。根目录应该直接有 `App`、`Scripts`、`Tests` 和 `.github`。
-3. `.github/workflows/build-ios.yml` 是隐藏目录内文件，也必须上传。Windows 资源管理器隐藏项设置不影响 Git 上传。
-4. 仓库打开 **Actions → Build iOS IPA → Run workflow**。
-5. 默认 Bundle ID 是 `io.local.svanarcontrol`；保持 `sign = false` 即可在不提供证书的情况下编译待签名 IPA。
-6. 工作流完成后，打开此次运行，下载 Artifacts 中的 `SvanarControl-iOS-运行编号`。解压后获得 `SvanarControl-unsigned.ipa`、SHA-256 校验文件和构建状态文本。
+安卓已实测模式与 EQ 回读、游戏开关、收藏、文件往返、非法文件拒绝和 App 模式/EQ 联动。
+当前 S050 的触控查询两次无响应，未执行触控写入／恢复。降噪和通透强度能力标志、档位均为 0，未开放相应滑块。
+耳机 LDAC 能力声明不等于传输成功；此前手机实际仍协商 AAC。iOS 诊断只显示耳机报告，不更改系统音频编码器。
+iOS 云端执行协议、跨平台 JSON、触控格式和能力解析测试并编译；iPhone 实机蓝牙、触控写入、文件选择器 UI 验证：未执行。
+耳机长按触发 EQ 联动的端到端实测：未执行。前台约每 5 秒检查模式，后台断开控制，不影响系统管理的音频。
 
-若本机已安装 GitHub CLI（https://cli.github.com/）和 Git，也可在工程根目录用 PowerShell 上传到你新建的**空仓库**并触发构建：
+## Android 构建
 
-```powershell
-.\Scripts\publish_github.ps1 -Repository '你的账号/svanar-control-ios'
-```
+安装 JDK、Android SDK `android-35` 和 `build-tools 36.0.0`，在 `Android` 内运行 `build.ps1`。
+用 `-Java`、`-Sdk` 和 `-SigningStore` 指定本机绝对路径。升级已有安装须使用同一签名私钥；私钥不在仓库中。
+Android 发布工作流验证预编译 APK 的 SHA-256 和容器并发布 Release，不宣称云端重新编译出的包与本机签名包相同。
 
-脚本使用 GitHub 的网页登录流程，不需要把令牌粘贴到聊天。为保护现有项目，它会拒绝覆盖非空远程仓库或复用已有本地 Git 历史。
+## iOS 构建
 
-支持手动构建；main 分支的 App / Scripts / Tests / Xcode 项目 / 工作流更新也会触发构建。GitHub 托管 macOS runner 的可用额度与费用以你的账户为准，本工作流超时 30 分钟，产物保留 7 天。
+macOS + Xcode：`bash Scripts/build_unsigned.sh`；或运行 Actions 的 **Build iOS IPA**。
+构建先运行纯 Swift 协议与数据模型测试，再对真实 `iphoneos / arm64` 编译、检查并打包 IPA，成功后上传 Release 和 Actions Artifacts。
 
-### 可选：直接导出已签名 IPA
+可选签名：在 GitHub Actions Secrets 设置 `IOS_CERT_P12_BASE64`、`IOS_CERT_PASSWORD`、`IOS_PROFILE_BASE64`，手动运行时选 `sign=true`，Bundle ID 要与描述文件匹配。
+签名证书及描述文件仅使用 runner 临时目录，不上传到源码或构建产物。
 
-在仓库 **Settings → Secrets and variables → Actions** 中添加：
+## EQ 文件
 
-| Secret | 内容 |
-|---|---|
-| `IOS_CERT_P12_BASE64` | 自有有效代码签名证书及私钥的 P12，以 Base64 编码 |
-| `IOS_CERT_PASSWORD` | P12 密码，若 P12 为空密码可留空 |
-| `IOS_PROFILE_BASE64` | 包含目标 iPhone UDID、未过期的开发或 Ad Hoc 描述文件，以 Base64 编码 |
-
-然后将工作流的 Bundle ID 改为与你的描述文件匹配的值，勾选 `sign` 后运行。
-签名文件只临时写入 runner 临时目录；临时 keychain 和描述文件在退出时清理，不上传到 Artifacts。
-签名成功后，Artifacts 额外包含 `SvanarControl-signed.ipa`。
-本流程不代办 Apple 证书、不提供企业证书、不上传 App Store / TestFlight。
-
-PowerShell 生成 Base64 文件供你复制到 GitHub Secrets（不要提交这些生成文件）：
-
-```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path .\certificate.p12))) | Set-Clipboard
-# 将剪贴板粘贴到 IOS_CERT_P12_BASE64
-[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path .\profile.mobileprovision))) | Set-Clipboard
-# 将剪贴板粘贴到 IOS_PROFILE_BASE64
-```
-
-### 安装与使用
-
-待签名 IPA 可交给你使用的个人签名安装工具签名；已签名 IPA 仅适用于描述文件允许的设备。开发安装按系统提示开启开发者模式并信任开发者。
-不要将“已生成待签名 IPA”理解为“可直接在任意 iPhone 安装”。
-
-1. 在 iPhone 蓝牙设置连接 SVANAR 音频。
-2. 打开 App，允许蓝牙权限，点击扫描并选择标识尾号与耳机相符的候选设备。
-3. 双耳佩戴后，点击模式按钮；状态显示回读一致才算控制确认，再通过耳机语音提示确认实际听感。
-4. 均衡器中拖动滑块仅修改草稿，点击“应用到耳机”才发送。恢复时选择“平直”并应用。
-
-## Mac 本地构建
-
-```bash
-bash Scripts/build_unsigned.sh
-# 结果：artifacts/SvanarControl-unsigned.ipa
-```
-
-也可直接打开 `SvanarControl.xcodeproj`，选择开发团队和 iPhone 后运行。
-工程由 Python 标准库脚本生成，不依赖 Homebrew、CocoaPods、SPM、XcodeGen 或第三方服务。
-
-## 验证与协议
-
-```bash
-python3 Scripts/generate_project.py
-swiftc App/HeadphoneProtocol.swift Tests/main.swift -o protocol-tests
-./protocol-tests
-```
-
-帧格式：`FE command 00 length_be16 payload crc16_ccitt_false_be16`。
-服务：`FF77`；写入：`FF88`（with response）；通知：`FF99`。
-命令 `06` 对应模式，`08` 对应 EQ，`03` 对应电量；查询为空载荷。
-EQ 写入载荷：`65 0A` 加 10 个有符号 int8 dB 值。
-检测到响应超时会主动断开，避免此无序列号协议的迟到响应串入下一条交易。
-未实现 OTA、恢复出厂、编码器强制切换，不访问这些控制路径。
-
-参考：
-- Apple CoreBluetooth：https://developer.apple.com/documentation/corebluetooth
-- iOS 系统音量控件：https://developer.apple.com/documentation/mediaplayer/mpvolumeview
-- 注册设备分发：https://developer.apple.com/documentation/xcode/distributing-your-app-to-registered-devices
-- GitHub macOS runner：https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job
-
-## 文件说明
-
-- `App/`：SwiftUI、CoreBluetooth、协议及图标。
-- `Tests/main.swift`：真实 Swift 协议回归测试，在 macOS 工作流中执行。
-- `Scripts/build_unsigned.sh`：编译 iPhoneOS arm64 二进制并打包；二进制检查失败则不产出 IPA。
-- `Scripts/build_signed.sh`：使用仓库 Secrets 可选签名导出。
-- `Scripts/generate_project.py`：幂等生成 Xcode 项目和共享 Scheme。
-- `.github/workflows/build-ios.yml`：macOS 云构建入口。
-
-图标资源已包含。如需重新绘制，运行 `python3 -m pip install pillow` 后执行 `python3 Scripts/generate_icon.py`。
+格式 `svanar-eq`，version 1，固定 10 个频段，整数增益每段 ±10 dB，最多 64 套、64 KiB。
+导入先完整校验，再合并；同 ID 的不同内容生成新 ID，导入后关闭联动，不立即写耳机。
+首次安装 iOS v1.3 自动准备 14 组收藏；安卓 v1.3 可导入附带 JSON。

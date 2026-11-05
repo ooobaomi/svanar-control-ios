@@ -24,8 +24,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: macos-15
     timeout-minutes: 30
     env:
@@ -44,6 +50,19 @@ jobs:
           IOS_PROFILE_BASE64: ${{ secrets.IOS_PROFILE_BASE64 }}
         shell: bash
         run: bash Scripts/build_signed.sh
+      - name: Publish iOS release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' build/DerivedData/Build/Products/Release-iphoneos/SvanarControl.app/Info.plist)
+          tag="ios-v${version}-${GITHUB_SHA:0:7}"
+          git archive --format=zip --prefix=SvanarControl-iOS/ -o "$RUNNER_TEMP/SvanarControl-iOS-source.zip" HEAD App Scripts Tests SvanarControl.xcodeproj .github/workflows/build-ios.yml README.md IOS-RELEASE-NOTES.md
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target "$GITHUB_SHA" --title "iOS v${version}" --notes-file IOS-RELEASE-NOTES.md
+          fi
+          gh release upload "$tag" artifacts/* "$RUNNER_TEMP/SvanarControl-iOS-source.zip" --clobber
+          echo "Release: https://github.com/$GITHUB_REPOSITORY/releases/tag/$tag" >> "$GITHUB_STEP_SUMMARY"
       - name: Upload IPA artifacts
         uses: actions/upload-artifact@v4
         with:

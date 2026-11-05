@@ -1,6 +1,7 @@
 import SwiftUI
 
 @main
+@MainActor
 struct SvanarControlApp: App {
     @StateObject private var headphones = HeadphoneManager()
     @Environment(\.scenePhase) private var phase

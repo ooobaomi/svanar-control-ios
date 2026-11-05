@@ -24,6 +24,8 @@ struct ContentView: View {
 
                     equalizerCard
 
+                    CompanionPanels().environmentObject(headphones)
+
                     audioCard
 
                     HStack(alignment: .top, spacing: 8) {
@@ -33,7 +35,7 @@ struct ContentView: View {
                     Button("打开 App 蓝牙权限设置") {
                         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
                     }.font(.footnote)
-                    Text("SVANAR Control 1.0 · 非 HIFIMAN 官方应用\n本机蓝牙通信，无账号、无互联网服务。")
+                    Text("SVANAR Control 1.3 · 非 HIFIMAN 官方应用\n本机蓝牙通信，无账号、无互联网服务。")
                         .font(.caption2).foregroundStyle(.secondary)
                 }.padding(20)
             }.background(appBackground).tint(mint)
@@ -159,12 +161,7 @@ private func card<Content: View>(@ViewBuilder content: () -> Content) -> some Vi
 struct EQView: View {
     @EnvironmentObject private var headphones: HeadphoneManager
     @Environment(\.dismiss) private var dismiss
-    private let presets: [(String, [Int])] = [
-        ("平直", Array(repeating: 0, count: 10)),
-        ("低频增强", [3,3,2,1,0,0,0,0,0,0]),
-        ("人声清晰", [-2,-1,0,0,1,2,2,1,0,0]),
-        ("柔和高频", [0,0,0,0,0,0,-1,-2,-3,-3])
-    ]
+    private let presets = EQPresets.values
 
     var body: some View {
         NavigationStack {

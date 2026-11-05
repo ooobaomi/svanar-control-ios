@@ -62,7 +62,7 @@ def build():
             'ASSETCATALOG_COMPILER_APPICON_NAME': 'AppIcon',
             'CODE_SIGN_STYLE': 'Automatic', 'TARGETED_DEVICE_FAMILY': '1,2',
             'SUPPORTED_PLATFORMS': 'iphoneos iphonesimulator', 'SUPPORTS_MACCATALYST': 'NO',
-            'CURRENT_PROJECT_VERSION': '1', 'MARKETING_VERSION': '1.0.0',
+            'CURRENT_PROJECT_VERSION': '4', 'MARKETING_VERSION': '1.3.0',
             'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES': 'YES',
             'LD_RUNPATH_SEARCH_PATHS': '$(inherited) @executable_path/Frameworks',
         }
