@@ -1,0 +1,53 @@
+name: Publish Android APK
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Android/**'
+      - 'downloads/SvanarControl-Android-v1.3.apk'
+      - 'downloads/SHA256SUMS-Android.txt'
+      - '.github/workflows/publish-android.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-v1.3.0-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify uploaded APK integrity
+        shell: bash
+        run: |
+          cd downloads
+          sha256sum -c SHA256SUMS-Android.txt
+          python3 - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('SvanarControl-Android-v1.3.apk') as z:
+              assert z.testzip() is None
+              assert {'classes.dex','AndroidManifest.xml'}.issubset(z.namelist())
+          print('Prebuilt signed APK matches the locally verified SHA-256.')
+          PY
+      - name: Package Android source
+        run: git archive --format=zip --prefix=SvanarControl/ -o "$RUNNER_TEMP/SvanarControl-Android-v1.3-source.zip" HEAD Android
+      - name: Publish downloadable Android release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          tag=android-v1.3.0
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Android v1.3.0' --notes-file Android/RELEASE-NOTES.md
+          fi
+          gh release upload "$tag" downloads/SvanarControl-Android-v1.3.apk downloads/SHA256SUMS-Android.txt downloads/SvanarControl-EQ-14-presets.json "$RUNNER_TEMP/SvanarControl-Android-v1.3-source.zip" --clobber
+      - name: Upload Android workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SvanarControl-Android-v1.3
+          path: downloads/
+          retention-days: 14
