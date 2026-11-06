@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+build/
+dist/
+bin/
+*.log
+hardware-test.json

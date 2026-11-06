@@ -1,0 +1,62 @@
+name: Build Windows EXE
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Windows/**'
+      - '.github/workflows/publish-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-build-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.15'
+          architecture: x64
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install -r Windows/requirements.txt -r Windows/requirements-build.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Dependency install failed' }
+      - name: Test and build desktop app
+        run: |
+          ./Windows/build.ps1 -Python python -DistDir "$env:RUNNER_TEMP/svanar-dist" -WorkDir "$env:RUNNER_TEMP/svanar-build"
+      - name: Validate PE and package complete runtime
+        run: |
+          python Windows/package_release.py --dist "$env:RUNNER_TEMP/svanar-dist/SvanarControl" --out artifacts
+          if ($LASTEXITCODE -ne 0) { throw 'Package validation failed' }
+          git archive --format=zip --prefix=SvanarControl-Windows-source/ -o artifacts/SvanarControl-Windows-source.zip HEAD Windows .github/workflows/publish-windows.yml
+          if ($LASTEXITCODE -ne 0) { throw 'Source archive failed' }
+          Copy-Item Windows/EQ-file-example.json artifacts/
+      - name: Publish Windows release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag='windows-v1.3.0-'+$env:GITHUB_SHA.Substring(0,7)
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --target $env:GITHUB_SHA --title 'Windows v1.3.0' --notes-file Windows/RELEASE-NOTES.md
+            if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }
+          }
+          $assets=@(Get-ChildItem artifacts -File | ForEach-Object { $_.FullName })
+          gh release upload $tag @assets --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Release upload failed' }
+          "Release: https://github.com/$env:GITHUB_REPOSITORY/releases/tag/$tag" >> $env:GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SvanarControl-Windows-${{ github.run_number }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7

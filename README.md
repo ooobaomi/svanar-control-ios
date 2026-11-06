@@ -1,8 +1,10 @@
-# SVANAR Control — Android / iOS
+# SVANAR Control — Windows / Android / iOS
 
 HIFIMAN SVANAR WIRELESS 的非官方本地蓝牙伴侣。没有账号、云端耳机控制或固件刷写功能。
 
 ## 下载
+
+- [Windows v1.3：完整运行包与源码（Release 标题 Windows）](https://github.com/ooobaomi/svanar-control-ios/releases)
 
 - [Android v1.3.0：APK、源码和 EQ 文件](https://github.com/ooobaomi/svanar-control-ios/releases/tag/android-v1.3.0)
 - [iOS：查看最新 Release 中的 IPA 和源码](https://github.com/ooobaomi/svanar-control-ios/releases)
@@ -13,6 +15,8 @@ iOS 默认交付 **unsigned / 待签名 IPA**，签名后安装；不是模拟�
 
 ## 工程
 
+- `Windows/`：Windows 10/11 x64 Python/Tk/WinRT 源码、19 项离线测试及打包脚本。
+
 - `Android/`：原生 Java Android 8+ 源码和 PowerShell 构建脚本。
 - `downloads/`：已在安卓手机测试的预编译、已签名 APK，以及 14 组 EQ JSON。
 - `App/`、`Scripts/`、`Tests/`、`SvanarControl.xcodeproj/`：iOS 16+ SwiftUI / CoreBluetooth 工程。
@@ -20,7 +24,7 @@ iOS 默认交付 **unsigned / 待签名 IPA**，签名后安装；不是模拟�
 ## v1.3 功能
 
 - HiFi／降噪／通透，写入后查询确认；10 段硬件 EQ，14 组通用偏好预设，非测量校准。
-- 多套 EQ 收藏，保存、覆盖、重命名、删除；Android / iOS 使用同一 JSON 文件格式。
+- 多套 EQ 收藏，保存、覆盖、重命名、删除；Windows / Android / iOS 使用同一 JSON 文件格式。
 - 显式模式绑定和可关闭的 EQ 联动：默认关闭，首次连接只读，未绑定模式不改 EQ。
 - 游戏模式、左右耳电量、型号／固件／耳机编码报告和强度能力诊断。
 - 触控映射读取、按设备备份与恢复逻辑；只对返回有效映射的设备开放写入。
@@ -52,3 +56,8 @@ macOS + Xcode：`bash Scripts/build_unsigned.sh`；或运行 Actions 的 **Build
 格式 `svanar-eq`，version 1，固定 10 个频段，整数增益每段 ±10 dB，最多 64 套、64 KiB。
 导入先完整校验，再合并；同 ID 的不同内容生成新 ID，导入后关闭联动，不立即写耳机。
 首次安装 iOS v1.3 自动准备 14 组收藏；安卓 v1.3 可导入附带 JSON。
+
+## Windows 构建与验证
+
+运行 Windows/build.ps1；完整运行包须保留 _internal 目录。Actions 的 Build Windows EXE 自动测试、编译和发布 ZIP/源码。EXE 未代码签名。
+Windows v1.3 已通过本机 19 项离线单元测试、隐藏 Tk 界面构造和打包后启动检查；现场因未发现控制广播未建立连接，新增功能的 Windows 实机验证尚未完成。本轮没有写入耳机设置。

@@ -1,0 +1,3 @@
+pycaw==20260927
+bleak==3.0.2
+comtypes==1.4.17
